@@ -9,39 +9,48 @@ const App = () => {
 
 	const width = 1280;
 	const height = 700;
+	const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+	const innerWidth = height - margin.left - margin.right;
+	const innerHeight = width - margin.top - margin.bottom;
 
 	useEffect(() => {
 		const row = (d) => {
 			d.Population = +d["2020"];
 			return d;
 		};
-		csv(csvUrl, row).then(setData);
+		csv(csvUrl, row).then((data) => setData(data.slice(0, 10)));
 	}, []);
 
 	if (!data) {
 		return <pre>"Loading"</pre>;
 	}
 
+	console.log(data);
+
 	const yScale = scaleBand()
 		.domain(data.map((d) => d.Country))
-		.range([0, height]);
+		.range([0, innerHeight]);
 
 	const xScale = scaleLinear()
 		.domain([0, max(data, (d) => d.Population)])
-		.range([0, width]);
+		.range([0, innerWidth]);
+
+	console.log(xScale.ticks());
 
 	return (
 		<svg width={width} height={height}>
-			{data.map((d) => (
-				<rect
-					x={0}
-					y={yScale(d.Country)}
-					width={xScale(d.Population)}
-					height={yScale.bandwidth()}
-				>
-					{" "}
-				</rect>
-			))}
+			<g transform={`translate(${margin.left}, ${margin.top})`}>
+				{data.map((d) => (
+					<rect
+						x={0}
+						y={yScale(d.Country)}
+						width={xScale(d.Population)}
+						height={yScale.bandwidth()}
+					>
+						{" "}
+					</rect>
+				))}
+			</g>
 		</svg>
 	);
 };
