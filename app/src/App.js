@@ -7,8 +7,8 @@ const App = () => {
 
 	const [data, setData] = useState(null);
 
-	const width = 1280;
-	const height = 700;
+	const width = 1000;
+	const height = 400;
 	const margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	const innerWidth = height - margin.left - margin.right;
 	const innerHeight = width - margin.top - margin.bottom;
@@ -40,15 +40,19 @@ const App = () => {
 	return (
 		<svg width={width} height={height}>
 			<g transform={`translate(${margin.left}, ${margin.top})`}>
+				{xScale.ticks().map((tick) => (
+					<g transform={`translate(${xScale(tick)}, 0)`}>
+						<line y2={innerHeight} stroke="black" />
+						<text style={{ textAnchor: "middle" }}>{tick}</text>
+					</g>
+				))}
 				{data.map((d) => (
 					<rect
 						x={0}
 						y={yScale(d.Country)}
 						width={xScale(d.Population)}
 						height={yScale.bandwidth()}
-					>
-						{" "}
-					</rect>
+					></rect>
 				))}
 			</g>
 		</svg>
